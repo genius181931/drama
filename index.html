@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Drama Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Drama <span>Tracker</span></h1>
+            <p>Catat dan pantau drama yang telah kamu tonton.</p>
+        </header>
+
+        <main>
+            <section class="glass-panel form-section">
+                <h2>Tambah Drama Baru</h2>
+                <form id="drama-form">
+                    <div class="form-group">
+                        <label for="judul">Judul Drama</label>
+                        <input type="text" id="judul" name="judul" required placeholder="Cth: Crash Landing on You">
+                    </div>
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" required>
+                                <option value="" disabled selected>Pilih Negara</option>
+                                <option value="South Korea">Korea Selatan</option>
+                                <option value="Japan">Jepang</option>
+                                <option value="China">China</option>
+                                <option value="Thailand">Thailand</option>
+                                <option value="Taiwan">Taiwan</option>
+                                <option value="Other">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="genre">Genre</label>
+                            <input type="text" id="genre" name="genre" required placeholder="Cth: Rom-Com, Thriller">
+                        </div>
+                    </div>
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="release">Tahun Rilis</label>
+                            <input type="number" id="release" name="release" required placeholder="Cth: 2019" min="1900" max="2099">
+                        </div>
+                        <div class="form-group">
+                            <label for="episode">Jumlah Episode</label>
+                            <input type="number" id="episode" name="episode" required placeholder="Cth: 16" min="1">
+                        </div>
+                    </div>
+                    <button type="submit" id="submit-btn" class="glow-on-hover">Simpan Drama</button>
+                    <div id="status-message" class="hidden"></div>
+                </form>
+            </section>
+
+            <section class="glass-panel list-section">
+                <div class="list-header">
+                    <h2>Drama yang Ditonton</h2>
+                    <div class="search-box">
+                        <input type="text" id="search" placeholder="Cari judul...">
+                    </div>
+                </div>
+                
+                <div class="loader-container" id="loader">
+                    <span class="spinner"></span>
+                    <p>Memuat data...</p>
+                    <p style="font-size:0.8rem; margin-top:5px; opacity:0.7">(Pastikan URL Apps Script sudah di-set di script.js)</p>
+                </div>
+                
+                <div class="table-container hidden" id="table-container">
+                    <table id="drama-table">
+                        <thead>
+                            <tr>
+                                <th>Judul</th>
+                                <th>Country</th>
+                                <th>Genre</th>
+                                <th>Tahun</th>
+                                <th>Episode</th>
+                            </tr>
+                        </thead>
+                        <tbody id="drama-tbody">
+                            <!-- Data akan dimuat disini -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state hidden" id="empty-state">
+                    <p>Belum ada drama yang ditambahkan atau tidak ditemukan.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Made with &hearts; for Drama Lovers</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
