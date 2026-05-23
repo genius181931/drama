@@ -1,5 +1,5 @@
 // Ganti URL ini dengan Web App URL dari Google Apps Script Anda
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFRNNkaphgv25jobA3eeVuNMjCQQTMmyBaLSbJ-e0dtThDEKKioTiWC6nWQUEyph9Z/exec'; 
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzs4L9GRdjJCL28GqzFlJh1eyLK2uPH-7aDrdVBWMqe7WpJaXWIxVqlLz2aYU-G4Vv/exec'; 
 
 // Elemen DOM
 const form = document.getElementById('drama-form');
