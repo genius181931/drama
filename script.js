@@ -1,7 +1,7 @@
-// Ganti URL ini dengan Web App URL dari Google Apps Script Anda
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzs4L9GRdjJCL28GqzFlJh1eyLK2uPH-7aDrdVBWMqe7WpJaXWIxVqlLz2aYU-G4Vv/exec'; 
+// Replace this URL with your new Google Apps Script Web App URL
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9JK23x-L7m7KWa0B8qD0V41CxhQWJYhpK-h5wJdRQIZyr_HB7gKz9LBfKywVPJAUU/exec'; 
 
-// Elemen DOM
+// DOM Elements
 const form = document.getElementById('drama-form');
 const submitBtn = document.getElementById('submit-btn');
 const statusMessage = document.getElementById('status-message');
@@ -11,20 +11,20 @@ const tableContainer = document.getElementById('table-container');
 const emptyState = document.getElementById('empty-state');
 const searchInput = document.getElementById('search');
 
-// Elemen Dashboard
+// Dashboard Elements
 const countTotal = document.getElementById('count-total');
 const countSelesai = document.getElementById('count-selesai');
 const countSedang = document.getElementById('count-sedang');
 const countBelum = document.getElementById('count-belum');
 
-// Elemen DOM Modal
+// Modal DOM Elements
 const dramaModal = document.getElementById('drama-modal');
 const openModalBtn = document.getElementById('open-modal-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
 const modalTitle = document.getElementById('modal-title');
 const dramaIdInput = document.getElementById('drama-id');
 
-// Elemen DOM Hapus
+// Delete Modal DOM Elements
 const deleteModal = document.getElementById('delete-modal');
 const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
@@ -37,9 +37,9 @@ let idToDelete = null;
 function openModal(isEdit = false) {
     dramaModal.classList.remove('hidden');
     if (!isEdit) {
-        modalTitle.textContent = 'Tambah Drama Baru';
+        modalTitle.textContent = 'Add New Drama';
         form.reset();
-        dramaIdInput.value = ''; // Kosongkan ID
+        dramaIdInput.value = ''; // Clear ID
     } else {
         modalTitle.textContent = 'Edit Drama';
     }
@@ -53,13 +53,13 @@ function closeModal() {
 openModalBtn.addEventListener('click', () => openModal(false));
 closeModalBtn.addEventListener('click', closeModal);
 
-// Hapus Modal Logic
+// Delete Modal Logic
 function openDeleteModal(id) {
     idToDelete = id;
     deleteModal.classList.remove('hidden');
     deleteStatus.classList.add('hidden');
     confirmDeleteBtn.disabled = false;
-    confirmDeleteBtn.innerHTML = 'Ya, Hapus';
+    confirmDeleteBtn.innerHTML = 'Yes, Delete';
 }
 
 function closeDeleteModal() {
@@ -86,13 +86,13 @@ async function fetchDramaData() {
             updateSummaryCards(dramaData);
             renderTable(dramaData);
         } else {
-            throw new Error(result.message || 'Gagal mengambil data');
+            throw new Error(result.message || 'Failed to fetch data');
         }
     } catch (error) {
         console.error('Error fetching data:', error);
         loader.classList.add('hidden');
         emptyState.classList.remove('hidden');
-        emptyState.innerHTML = `<p style="color:var(--error-color)">Gagal memuat data.</p>`;
+        emptyState.innerHTML = `<p style="color:var(--error-color)">Failed to load data.</p>`;
     }
 }
 
@@ -101,29 +101,29 @@ function updateSummaryCards(data) {
     if (!data) return;
     countTotal.textContent = data.length;
     
-    let selesai = 0;
-    let sedang = 0;
-    let belum = 0;
+    let completed = 0;
+    let watching = 0;
+    let planToWatch = 0;
     
     data.forEach(drama => {
-        if (drama.StatusTontonan === 'Selesai') selesai++;
-        if (drama.StatusTontonan === 'Sedang Ditonton') sedang++;
-        if (drama.StatusTontonan === 'Daftar Tunggu') belum++;
+        if (drama.WatchStatus === 'Completed') completed++;
+        if (drama.WatchStatus === 'Watching') watching++;
+        if (drama.WatchStatus === 'Plan to Watch') planToWatch++;
     });
     
-    countSelesai.textContent = selesai;
-    countSedang.textContent = sedang;
-    countBelum.textContent = belum;
+    countSelesai.textContent = completed;
+    countSedang.textContent = watching;
+    countBelum.textContent = planToWatch;
 }
 
-// Render Tabel
+// Render Table
 function renderTable(dataToRender) {
     loader.classList.add('hidden');
     
     if (!dataToRender || dataToRender.length === 0) {
         tableContainer.classList.add('hidden');
         emptyState.classList.remove('hidden');
-        emptyState.innerHTML = '<p>Belum ada drama yang ditambahkan atau tidak ditemukan.</p>';
+        emptyState.innerHTML = '<p>No dramas added yet or not found.</p>';
         return;
     }
 
@@ -135,23 +135,23 @@ function renderTable(dataToRender) {
         const tr = document.createElement('tr');
         
         tr.innerHTML = `
-            <td style="font-weight:600; color:var(--text-light)">${drama.Judul || '-'}</td>
+            <td style="font-weight:600; color:var(--text-light)">${drama.Title || '-'}</td>
             <td><span class="badge">${drama.Country || '-'}</span></td>
             <td>${drama.Genre || '-'}</td>
-            <td>${drama.Release || '-'}</td>
-            <td>${drama.JumlahEpisode || '-'} Eps</td>
-            <td><span class="badge" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:white">${drama.StatusTontonan || '-'}</span></td>
-            <td><span class="badge" style="background:rgba(40,167,69,0.1); border-color:rgba(40,167,69,0.3); color:var(--success-color)">${drama.StatusRilis || '-'}</span></td>
+            <td>${drama.ReleaseYear || '-'}</td>
+            <td>${drama.Episodes || '-'} Eps</td>
+            <td><span class="badge" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:white">${drama.WatchStatus || '-'}</span></td>
+            <td><span class="badge" style="background:rgba(40,167,69,0.1); border-color:rgba(40,167,69,0.3); color:var(--success-color)">${drama.ReleaseStatus || '-'}</span></td>
             <td>
                 <button class="btn-action btn-edit" onclick="handleEdit('${drama.ID}')">Edit</button>
-                <button class="btn-action btn-delete" onclick="handleDelete('${drama.ID}')">Hapus</button>
+                <button class="btn-action btn-delete" onclick="handleDelete('${drama.ID}')">Delete</button>
             </td>
         `;
         dramaTbody.appendChild(tr);
     });
 }
 
-// Fitur Pencarian
+// Search Feature
 searchInput.addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase();
     if (searchTerm === '') {
@@ -159,7 +159,7 @@ searchInput.addEventListener('input', (e) => {
         return;
     }
     const filteredData = dramaData.filter(drama => {
-        return (drama.Judul && drama.Judul.toLowerCase().includes(searchTerm)) ||
+        return (drama.Title && drama.Title.toLowerCase().includes(searchTerm)) ||
                (drama.Country && drama.Country.toLowerCase().includes(searchTerm)) ||
                (drama.Genre && drama.Genre.toLowerCase().includes(searchTerm));
     });
@@ -172,13 +172,13 @@ window.handleEdit = function(id) {
     if (!drama) return;
 
     dramaIdInput.value = drama.ID;
-    document.getElementById('judul').value = drama.Judul;
+    document.getElementById('judul').value = drama.Title;
     document.getElementById('country').value = drama.Country;
     document.getElementById('genre').value = drama.Genre;
-    document.getElementById('release').value = drama.Release;
-    document.getElementById('episode').value = drama.JumlahEpisode;
-    document.getElementById('statusTontonan').value = drama.StatusTontonan;
-    document.getElementById('statusRilis').value = drama.StatusRilis;
+    document.getElementById('release').value = drama.ReleaseYear;
+    document.getElementById('episode').value = drama.Episodes;
+    document.getElementById('statusTontonan').value = drama.WatchStatus;
+    document.getElementById('statusRilis').value = drama.ReleaseStatus;
     
     openModal(true);
 };
@@ -188,23 +188,23 @@ window.handleDelete = function(id) {
     openDeleteModal(id);
 };
 
-// Submit form (Tambah & Edit)
+// Submit form (Add & Edit)
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!APPS_SCRIPT_URL) return;
 
-    // Tambahkan action type
+    // Add action type
     const formData = new FormData(form);
     if(dramaIdInput.value) {
         formData.append('action', 'edit');
     } else {
         formData.append('action', 'add');
-        // Buat ID unik sementara (akan digunakan di server)
+        // Create temporary ID (will be used on server)
         formData.append('id', new Date().getTime()); 
     }
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = 'Menyimpan...';
+    submitBtn.innerHTML = 'Saving...';
     statusMessage.className = 'hidden';
 
     try {
@@ -212,7 +212,7 @@ form.addEventListener('submit', async (e) => {
         const result = await response.json();
         
         if (result.status === 'success') {
-            showStatus('Berhasil disimpan!', 'success');
+            showStatus('Saved successfully!', 'success');
             setTimeout(() => {
                 closeModal();
                 fetchDramaData(); // Refresh Data
@@ -221,19 +221,19 @@ form.addEventListener('submit', async (e) => {
             throw new Error(result.message);
         }
     } catch (error) {
-        showStatus('Gagal menyimpan: ' + error.message, 'error');
+        showStatus('Failed to save: ' + error.message, 'error');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Simpan Drama';
+        submitBtn.innerHTML = 'Save Drama';
     }
 });
 
-// Proses Hapus setelah Konfirmasi
+// Delete Process after Confirmation
 confirmDeleteBtn.addEventListener('click', async () => {
     if(!idToDelete || !APPS_SCRIPT_URL) return;
 
     confirmDeleteBtn.disabled = true;
-    confirmDeleteBtn.innerHTML = 'Menghapus...';
+    confirmDeleteBtn.innerHTML = 'Deleting...';
     
     const formData = new FormData();
     formData.append('action', 'delete');
@@ -250,11 +250,11 @@ confirmDeleteBtn.addEventListener('click', async () => {
             throw new Error(result.message);
         }
     } catch (error) {
-        deleteStatus.textContent = 'Gagal menghapus: ' + error.message;
+        deleteStatus.textContent = 'Failed to delete: ' + error.message;
         deleteStatus.className = 'error';
         deleteStatus.classList.remove('hidden');
         confirmDeleteBtn.disabled = false;
-        confirmDeleteBtn.innerHTML = 'Ya, Hapus';
+        confirmDeleteBtn.innerHTML = 'Yes, Delete';
     }
 });
 
