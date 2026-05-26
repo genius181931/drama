@@ -13,14 +13,14 @@
     <div class="background-animation"></div>
     
     <div class="container">
-        <header>
+        <header class="animate-fade-in-up">
             <h1>Drama <span>Tracker</span></h1>
             <p>Track and manage the dramas you have watched.</p>
         </header>
 
         <main>
             <!-- Summary Dashboard -->
-            <section class="summary-cards">
+            <section class="summary-cards animate-fade-in-up delay-1">
                 <div class="glass-panel summary-card">
                     <h3>Total Dramas</h3>
                     <p id="count-total" class="summary-number">0</p>
@@ -39,7 +39,7 @@
                 </div>
             </section>
 
-            <section class="glass-panel list-section">
+            <section class="glass-panel list-section animate-fade-in-up delay-2">
                 <div class="list-header">
                     <h2>Drama List</h2>
                     <div class="header-actions">
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Modal Form Tambah/Edit Drama -->
-    <div id="drama-modal" class="modal-overlay hidden">
+    <div id="drama-modal" class="modal-overlay">
         <div class="modal-content glass-panel">
             <button id="close-modal-btn" class="close-btn">&times;</button>
             <h2 id="modal-title">Add New Drama</h2>
@@ -97,6 +97,7 @@
                 <div class="form-group">
                     <label for="judul">Drama Title</label>
                     <input type="text" id="judul" name="title" required placeholder="e.g: Crash Landing on You">
+                    <span id="title-warning" class="hidden" style="color: var(--error-color); font-size: 0.85rem; margin-top: 0.5rem;">⚠️ This drama is already in your list!</span>
                 </div>
                 <div class="form-group-row">
                     <div class="form-group">
@@ -153,7 +154,7 @@
     </div>
 
     <!-- Modal Delete Confirmation -->
-    <div id="delete-modal" class="modal-overlay hidden">
+    <div id="delete-modal" class="modal-overlay">
         <div class="modal-content glass-panel" style="max-width: 400px; text-align: center;">
             <h2>Confirm Deletion</h2>
             <p>Are you sure you want to delete this drama?</p>

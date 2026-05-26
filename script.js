@@ -23,6 +23,8 @@ const openModalBtn = document.getElementById('open-modal-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
 const modalTitle = document.getElementById('modal-title');
 const dramaIdInput = document.getElementById('drama-id');
+const judulInput = document.getElementById('judul');
+const titleWarning = document.getElementById('title-warning');
 
 // Delete Modal DOM Elements
 const deleteModal = document.getElementById('delete-modal');
@@ -35,7 +37,7 @@ let idToDelete = null;
 
 // Modal Logic
 function openModal(isEdit = false) {
-    dramaModal.classList.remove('hidden');
+    dramaModal.classList.add('active');
     if (!isEdit) {
         modalTitle.textContent = 'Add New Drama';
         form.reset();
@@ -44,10 +46,15 @@ function openModal(isEdit = false) {
         modalTitle.textContent = 'Edit Drama';
     }
     statusMessage.classList.add('hidden');
+    
+    // Reset warning
+    titleWarning.classList.add('hidden');
+    submitBtn.disabled = false;
+    judulInput.style.borderColor = '';
 }
 
 function closeModal() {
-    dramaModal.classList.add('hidden');
+    dramaModal.classList.remove('active');
 }
 
 openModalBtn.addEventListener('click', () => openModal(false));
@@ -56,14 +63,14 @@ closeModalBtn.addEventListener('click', closeModal);
 // Delete Modal Logic
 function openDeleteModal(id) {
     idToDelete = id;
-    deleteModal.classList.remove('hidden');
+    deleteModal.classList.add('active');
     deleteStatus.classList.add('hidden');
     confirmDeleteBtn.disabled = false;
     confirmDeleteBtn.innerHTML = 'Yes, Delete';
 }
 
 function closeDeleteModal() {
-    deleteModal.classList.add('hidden');
+    deleteModal.classList.remove('active');
     idToDelete = null;
 }
 
@@ -131,8 +138,12 @@ function renderTable(dataToRender) {
     emptyState.classList.add('hidden');
     dramaTbody.innerHTML = '';
     
-    dataToRender.forEach(drama => {
+    dataToRender.forEach((drama, index) => {
         const tr = document.createElement('tr');
+        
+        // Tambahkan class animasi dengan delay berdasarkan index agar muncul bergantian
+        tr.className = 'animate-fade-in-up';
+        tr.style.animationDelay = (0.1 * Math.min(index, 10)) + 's';
         
         tr.innerHTML = `
             <td style="font-weight:600; color:var(--text-light)">${drama.Title || '-'}</td>
@@ -172,7 +183,7 @@ window.handleEdit = function(id) {
     if (!drama) return;
 
     dramaIdInput.value = drama.ID;
-    document.getElementById('judul').value = drama.Title;
+    judulInput.value = drama.Title;
     document.getElementById('country').value = drama.Country;
     document.getElementById('genre').value = drama.Genre;
     document.getElementById('release').value = drama.ReleaseYear;
@@ -182,6 +193,33 @@ window.handleEdit = function(id) {
     
     openModal(true);
 };
+
+// Title Duplicate Validation
+judulInput.addEventListener('input', (e) => {
+    const inputTitle = e.target.value.trim().toLowerCase();
+    const currentId = dramaIdInput.value;
+
+    const isDuplicate = dramaData.some(drama => {
+        const dramaTitle = (drama.Title || '').trim().toLowerCase();
+        
+        // Ignore itself when editing
+        if (currentId && String(drama.ID) === String(currentId)) {
+            return false; 
+        }
+        
+        return dramaTitle === inputTitle && inputTitle !== '';
+    });
+
+    if (isDuplicate) {
+        titleWarning.classList.remove('hidden');
+        submitBtn.disabled = true;
+        judulInput.style.borderColor = 'var(--error-color)';
+    } else {
+        titleWarning.classList.add('hidden');
+        submitBtn.disabled = false;
+        judulInput.style.borderColor = '';
+    }
+});
 
 // Delete Button Click
 window.handleDelete = function(id) {
