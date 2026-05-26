@@ -11,6 +11,12 @@ const tableContainer = document.getElementById('table-container');
 const emptyState = document.getElementById('empty-state');
 const searchInput = document.getElementById('search');
 
+// Elemen Dashboard
+const countTotal = document.getElementById('count-total');
+const countSelesai = document.getElementById('count-selesai');
+const countSedang = document.getElementById('count-sedang');
+const countBelum = document.getElementById('count-belum');
+
 // Elemen DOM Modal
 const dramaModal = document.getElementById('drama-modal');
 const openModalBtn = document.getElementById('open-modal-btn');
@@ -77,6 +83,7 @@ async function fetchDramaData() {
 
         if (result.status === 'success') {
             dramaData = result.data;
+            updateSummaryCards(dramaData);
             renderTable(dramaData);
         } else {
             throw new Error(result.message || 'Gagal mengambil data');
@@ -87,6 +94,26 @@ async function fetchDramaData() {
         emptyState.classList.remove('hidden');
         emptyState.innerHTML = `<p style="color:var(--error-color)">Gagal memuat data.</p>`;
     }
+}
+
+// Update Dashboard Cards
+function updateSummaryCards(data) {
+    if (!data) return;
+    countTotal.textContent = data.length;
+    
+    let selesai = 0;
+    let sedang = 0;
+    let belum = 0;
+    
+    data.forEach(drama => {
+        if (drama.StatusTontonan === 'Selesai') selesai++;
+        if (drama.StatusTontonan === 'Sedang Ditonton') sedang++;
+        if (drama.StatusTontonan === 'Daftar Tunggu') belum++;
+    });
+    
+    countSelesai.textContent = selesai;
+    countSedang.textContent = sedang;
+    countBelum.textContent = belum;
 }
 
 // Render Tabel
