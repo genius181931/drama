@@ -144,15 +144,30 @@ function renderTable(dataToRender) {
         // Tambahkan class animasi dengan delay berdasarkan index agar muncul bergantian
         tr.className = 'animate-fade-in-up';
         tr.style.animationDelay = (0.1 * Math.min(index, 10)) + 's';
-        
+
+        const watchStatus = drama.WatchStatus || '-';
+        const releaseStatus = drama.ReleaseStatus || '-';
+
+        const watchStatusClass =
+            watchStatus === 'Completed' ? 'status-completed' :
+            watchStatus === 'Watching' ? 'status-watching' :
+            watchStatus === 'Plan to Watch' ? 'status-plan' :
+            watchStatus === 'Dropped' ? 'status-dropped' :
+            '';
+
+        const releaseStatusClass =
+            releaseStatus === 'Completed' ? 'release-completed' :
+            releaseStatus === 'Ongoing' ? 'release-ongoing' :
+            '';
+
         tr.innerHTML = `
-            <td style="font-weight:600; color:var(--text-light)">${drama.Title || '-'}</td>
-            <td><span class="badge">${drama.Country || '-'}</span></td>
+            <td class="cell-title">${drama.Title || '-'}</td>
+            <td><span class="badge badge-chip">${drama.Country || '-'}</span></td>
             <td>${drama.Genre || '-'}</td>
             <td>${drama.ReleaseYear || '-'}</td>
             <td>${drama.Episodes || '-'} Eps</td>
-            <td><span class="badge" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:white">${drama.WatchStatus || '-'}</span></td>
-            <td><span class="badge" style="background:rgba(40,167,69,0.1); border-color:rgba(40,167,69,0.3); color:var(--success-color)">${drama.ReleaseStatus || '-'}</span></td>
+            <td><span class="badge ${watchStatusClass}">${watchStatus}</span></td>
+            <td><span class="badge ${releaseStatusClass}">${releaseStatus}</span></td>
             <td>
                 <button class="btn-action btn-edit" onclick="handleEdit('${drama.ID}')">Edit</button>
                 <button class="btn-action btn-delete" onclick="handleDelete('${drama.ID}')">Delete</button>
