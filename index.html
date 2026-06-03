@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
     <div class="background-animation"></div>
@@ -21,19 +21,19 @@
         <main>
             <!-- Summary Dashboard -->
             <section class="summary-cards animate-fade-in-up delay-1">
-                <div class="glass-panel summary-card">
+                <div class="glass-panel summary-card active-filter" data-filter="All">
                     <h3>Total Dramas</h3>
                     <p id="count-total" class="summary-number">0</p>
                 </div>
-                <div class="glass-panel summary-card">
+                <div class="glass-panel summary-card" data-filter="Completed">
                     <h3>Completed</h3>
                     <p id="count-selesai" class="summary-number">0</p>
                 </div>
-                <div class="glass-panel summary-card">
+                <div class="glass-panel summary-card" data-filter="Watching">
                     <h3>Watching</h3>
                     <p id="count-sedang" class="summary-number">0</p>
                 </div>
-                <div class="glass-panel summary-card">
+                <div class="glass-panel summary-card" data-filter="Plan to Watch">
                     <h3>Plan to Watch</h3>
                     <p id="count-belum" class="summary-number">0</p>
                 </div>

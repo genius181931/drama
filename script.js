@@ -170,28 +170,64 @@ function renderTable(dataToRender) {
             <td>${drama.Episodes || '-'} Eps</td>
             <td><span class="badge ${watchStatusClass}">${watchStatus}</span></td>
             <td><span class="badge ${releaseStatusClass}">${releaseStatus}</span></td>
-            <td>
-                <button class="btn-action btn-edit" onclick="handleEdit('${drama.ID}')">Edit</button>
-                <button class="btn-action btn-delete" onclick="handleDelete('${drama.ID}')">Delete</button>
+            <td style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="btn-action btn-edit" onclick="handleEdit('${drama.ID}')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button class="btn-action btn-delete" onclick="handleDelete('${drama.ID}')" title="Delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
             </td>
         `;
         dramaTbody.appendChild(tr);
     });
 }
 
-// Search Feature
-searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    if (searchTerm === '') {
-        renderTable(dramaData);
-        return;
+// Filtering Feature (Search & Status)
+let currentFilter = 'All';
+
+function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase();
+    let filteredData = dramaData;
+
+    if (currentFilter !== 'All') {
+        filteredData = filteredData.filter(drama => drama.WatchStatus === currentFilter);
     }
-    const filteredData = dramaData.filter(drama => {
-        return (drama.Title && drama.Title.toLowerCase().includes(searchTerm)) ||
-               (drama.Country && drama.Country.toLowerCase().includes(searchTerm)) ||
-               (drama.Genre && drama.Genre.toLowerCase().includes(searchTerm));
-    });
+
+    if (searchTerm !== '') {
+        filteredData = filteredData.filter(drama => {
+            return (drama.Title && drama.Title.toLowerCase().includes(searchTerm)) ||
+                   (drama.Country && drama.Country.toLowerCase().includes(searchTerm)) ||
+                   (drama.Genre && drama.Genre.toLowerCase().includes(searchTerm));
+        });
+    }
+
     renderTable(filteredData);
+}
+
+// Search Input Event
+searchInput.addEventListener('input', applyFilters);
+
+// Summary Cards Click Event
+const summaryCards = document.querySelectorAll('.summary-card');
+summaryCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const filterVal = card.getAttribute('data-filter');
+        
+        // Toggle behavior: if clicking the active filter (except 'All'), revert to 'All'
+        if (currentFilter === filterVal && filterVal !== 'All') {
+            currentFilter = 'All';
+        } else {
+            currentFilter = filterVal;
+        }
+
+        // Update active class
+        summaryCards.forEach(c => c.classList.remove('active-filter'));
+        const activeCard = Array.from(summaryCards).find(c => c.getAttribute('data-filter') === currentFilter);
+        if (activeCard) activeCard.classList.add('active-filter');
+
+        applyFilters();
+    });
 });
 
 // Update Title Suggestions for Autocomplete
