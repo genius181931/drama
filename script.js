@@ -24,6 +24,7 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 const modalTitle = document.getElementById('modal-title');
 const dramaIdInput = document.getElementById('drama-id');
 const judulInput = document.getElementById('judul');
+const judulSuggestions = document.getElementById('judul-suggestions');
 const titleWarning = document.getElementById('title-warning');
 
 // Delete Modal DOM Elements
@@ -92,6 +93,7 @@ async function fetchDramaData() {
             dramaData = result.data;
             updateSummaryCards(dramaData);
             renderTable(dramaData);
+            updateTitleSuggestions(dramaData);
         } else {
             throw new Error(result.message || 'Failed to fetch data');
         }
@@ -191,6 +193,21 @@ searchInput.addEventListener('input', (e) => {
     });
     renderTable(filteredData);
 });
+
+// Update Title Suggestions for Autocomplete
+function updateTitleSuggestions(data) {
+    if (!judulSuggestions) return;
+    
+    // Get unique titles
+    const uniqueTitles = [...new Set(data.map(d => (d.Title || '').trim()).filter(Boolean))];
+    
+    judulSuggestions.innerHTML = '';
+    uniqueTitles.forEach(title => {
+        const option = document.createElement('option');
+        option.value = title;
+        judulSuggestions.appendChild(option);
+    });
+}
 
 // Edit Button Click
 window.handleEdit = function(id) {
