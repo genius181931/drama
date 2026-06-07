@@ -49,8 +49,9 @@ function openModal(isEdit = false) {
     }
     statusMessage.classList.add('hidden');
     
-    // Reset warning
+    // Reset warning and link
     titleWarning.classList.add('hidden');
+    document.getElementById('mdl-link').classList.add('hidden');
     submitBtn.disabled = false;
     judulInput.style.borderColor = '';
 }
@@ -382,6 +383,7 @@ if (autofillBtn) {
 
         autofillBtn.disabled = true;
         autofillBtn.textContent = '⏳ Searching...';
+        document.getElementById('mdl-link').classList.add('hidden');
 
         try {
             // Use Google Apps Script as proxy to fetch from MyDramaList API
@@ -419,6 +421,13 @@ if (autofillBtn) {
             // Set Episodes
             if (detailsData.episodes) {
                 document.getElementById('episode').value = detailsData.episodes;
+            }
+            
+            // Show MDL Link
+            if (firstResult.url) {
+                const mdlLink = document.getElementById('mdl-link');
+                mdlLink.href = firstResult.url;
+                mdlLink.classList.remove('hidden');
             }
             
             autofillBtn.textContent = '✅ Success';
