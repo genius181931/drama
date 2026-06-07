@@ -1,5 +1,5 @@
 // Replace this URL with your new Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9JK23x-L7m7KWa0B8qD0V41CxhQWJYhpK-h5wJdRQIZyr_HB7gKz9LBfKywVPJAUU/exec'; 
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7T_iPJKWSMIl5uAGK_ljL8pxNChUvSPXCgZhwpUrNZdY6gua-pHn3BHIzu2EK560Y/exec'; 
 
 // DOM Elements
 const form = document.getElementById('drama-form');
@@ -26,6 +26,7 @@ const dramaIdInput = document.getElementById('drama-id');
 const judulInput = document.getElementById('judul');
 const judulSuggestions = document.getElementById('judul-suggestions');
 const titleWarning = document.getElementById('title-warning');
+const autofillBtn = document.getElementById('autofill-btn');
 
 // Delete Modal DOM Elements
 const deleteModal = document.getElementById('delete-modal');
@@ -368,6 +369,74 @@ function showStatus(message, type) {
     statusMessage.textContent = message;
     statusMessage.className = type;
     statusMessage.classList.remove('hidden');
+}
+
+// Autofill Button Logic
+if (autofillBtn) {
+    autofillBtn.addEventListener('click', async () => {
+        const title = judulInput.value.trim();
+        if (!title) {
+            alert('Please enter a drama title first.');
+            return;
+        }
+
+        autofillBtn.disabled = true;
+        autofillBtn.textContent = '⏳ Searching...';
+
+        try {
+            // Use Google Apps Script as proxy to fetch from MyDramaList API
+            const response = await fetch(`${APPS_SCRIPT_URL}?action=autofill&title=${encodeURIComponent(title)}`);
+            const result = await response.json();
+            
+            if (result.status !== 'success') {
+                throw new Error(result.message || 'Drama not found');
+            }
+            
+            const firstResult = result.data.searchResult;
+            const detailsData = result.data.details;
+            
+            // Set Country
+            const countrySelect = document.getElementById('country');
+            let countryVal = 'Other';
+            if (detailsData.country) {
+                const c = detailsData.country;
+                if (['South Korea', 'Japan', 'China', 'Thailand', 'Taiwan'].includes(c)) {
+                    countryVal = c;
+                }
+            }
+            countrySelect.value = countryVal;
+            
+            // Set Release Year
+            if (firstResult.year) {
+                document.getElementById('release').value = firstResult.year;
+            } else if (detailsData.aired) {
+                const yearMatch = detailsData.aired.match(/\d{4}/);
+                if (yearMatch) {
+                    document.getElementById('release').value = yearMatch[0];
+                }
+            }
+            
+            // Set Episodes
+            if (detailsData.episodes) {
+                document.getElementById('episode').value = detailsData.episodes;
+            }
+            
+            autofillBtn.textContent = '✅ Success';
+            setTimeout(() => {
+                autofillBtn.textContent = '🔍 Auto Fill';
+                autofillBtn.disabled = false;
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Autofill Error:', error);
+            autofillBtn.textContent = '❌ Failed';
+            setTimeout(() => {
+                autofillBtn.textContent = '🔍 Auto Fill';
+                autofillBtn.disabled = false;
+            }, 2000);
+            alert('Failed to fetch data or drama not found.');
+        }
+    });
 }
 
 // Init

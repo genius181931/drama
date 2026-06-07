@@ -96,7 +96,10 @@
                 
                 <div class="form-group">
                     <label for="judul">Drama Title</label>
-                    <input type="text" id="judul" name="title" required placeholder="e.g: Crash Landing on You" list="judul-suggestions" autocomplete="off">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="judul" name="title" required placeholder="e.g: Crash Landing on You" list="judul-suggestions" autocomplete="off" style="flex: 1; min-width: 0;">
+                        <button type="button" id="autofill-btn" class="btn-secondary" style="margin-top: 0; white-space: nowrap; width: auto; flex-shrink: 0;">🔍 Auto Fill</button>
+                    </div>
                     <datalist id="judul-suggestions"></datalist>
                     <span id="title-warning" class="hidden" style="color: var(--error-color); font-size: 0.85rem; margin-top: 0.5rem;">⚠️ This drama is already in your list!</span>
                 </div>
